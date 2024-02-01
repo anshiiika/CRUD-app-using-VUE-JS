@@ -1,0 +1,109 @@
+
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #a2e2f3;
+        position: relative;
+      }
+      
+      #app {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      
+      button {
+        padding: 10px;
+        margin: 5px;
+        cursor: pointer;
+        background-color: #8468e0;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+      }
+      
+      button:hover {
+        background-color: #c59bde;
+      }
+      
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      
+      li {
+        margin: 10px 0;
+      }
+      
+      form {
+        margin-top: 20px;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      
+      input {
+        padding: 8px;
+        margin-bottom: 10px;
+        width: 65%;
+      }
+      
+      body::before,
+      body::after,
+      #app::before,
+      #app::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.05);
+        pointer-events: none; 
+      }
+      
+      body::before {
+        width: 80px;
+        height: 80px;
+        top: 20%;
+        left: 10%;
+      }
+      
+      body::after {
+        width: 120px;
+        height: 120px;
+        top: 70%;
+        right: 5%;
+      }
+      
+      #app::before {
+        width: 100px;
+        height: 100px;
+        top: 10%;
+        left: 80%;
+      }
+      
+      #app::after {
+        width: 150px;
+        height: 150px;
+        bottom: 10%;
+        right: 15%;
+      }
+      #app::before {
+        width: 100px;
+        height: 100px;
+        top: 10%;
+        left: 80%;
+      }
+      
+      #app::after {
+        width: 150px;
+        height: 150px;
+        bottom: 10%;
+        right: 15%;
+      }

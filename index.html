@@ -4,27 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vue CRUD App</title>
-  <!-- Add Vue.js -->
+
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="app">
- 
   <div v-if="!user">
+    <label for="username">Username:</label>
+    <input type="text" v-model="loginData.username" required>
+    <label for="password">Password:</label>
+    <input type="password" v-model="loginData.password" required>
     <button @click="login">Login</button>
   </div>
   <div v-else>
     <button @click="logout">Logout</button>
-    <button @click="deleteAllUsers">Delete All Users</button>
-  </div>
-
-  
-  <div v-if="user">
     <h2>Welcome, {{ user.username }}!</h2>
 
-    
+    <form @submit.prevent="saveUser">
+      <label for="username">Username:</label>
+      <input type="text" v-model="newUser.username" required>
+      <button type="submit">{{ editingUser ? 'Update' : 'Add' }} User</button>
+    </form>
+
     <ul>
       <li v-for="user in userList" :key="user.id">
         {{ user.username }}
@@ -32,13 +35,6 @@
         <button @click="deleteUser(user.id)">Delete</button>
       </li>
     </ul>
-
-    
-    <form @submit.prevent="saveUser">
-      <label for="username">Username:</label>
-      <input type="text" v-model="newUser.username" required>
-      <button type="submit">{{ editingUser ? 'Update' : 'Add' }} User</button>
-    </form>
   </div>
 </div>
 
@@ -49,53 +45,67 @@ new Vue({
     user: null,
     userList: [],
     newUser: { username: '' },
-    editingUser: null
+    editingUser: null,
+    loginData: { username: '', password: '' },
+    passwordForDemoUser: 'Shukla'
   },
   mounted() {
-  
-    const storedUserList = localStorage.getItem('userList');
-    if (storedUserList) {
-      this.userList = JSON.parse(storedUserList);
-    }
+    this.getUsers();
   },
   methods: {
-    login() {
-     
-      this.user = { username: 'Users' };
+    async getUsers() {
+      const response = await fetch('http://localhost:3000/users');
+      this.userList = await response.json();
     },
-    logout() {
+    async login() {
+      const { username, password } = this.loginData;
+
+      
+      if (username === 'Anshika' && password === this.passwordForDemoUser) {
+        this.user = { username: 'DemoUser' };
+        await this.getUsers(); 
+      } else {
+        alert('Invalid username or password.');
+      }
+    },
+    async logout() {
       this.user = null;
+      this.userList = [];
     },
-    editUser(user) {
+    async editUser(user) {
       this.editingUser = user;
       this.newUser.username = user.username;
     },
-    saveUser() {
+    async saveUser() {
       if (this.editingUser) {
-        this.editingUser.username = this.newUser.username;
+       
+        const response = await fetch(`http://localhost:3000/users/${this.editingUser.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: this.newUser.username })
+        });
       } else {
-        const newUser = {
-          id: this.userList.length + 1,
-          username: this.newUser.username
-        };
-        this.userList.push(newUser);
+       
+        const response = await fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: this.newUser.username })
+        });
       }
 
-     
-      localStorage.setItem('userList', JSON.stringify(this.userList));
+      await this.getUsers(); 
 
+      
       this.newUser.username = '';
       this.editingUser = null;
     },
-    deleteUser(userId) {
-      this.userList = this.userList.filter(user => user.id !== userId);
-    
-      localStorage.setItem('userList', JSON.stringify(this.userList));
-    },
-    deleteAllUsers() {
-      this.userList = [];
-      
-      localStorage.setItem('userList', JSON.stringify(this.userList));
+    async deleteUser(userId) {
+     
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
+        method: 'DELETE'
+      });
+
+      await this.getUsers(); 
     }
   }
 });
@@ -103,16 +113,3 @@ new Vue({
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
